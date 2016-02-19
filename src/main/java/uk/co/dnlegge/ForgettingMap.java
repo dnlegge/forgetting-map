@@ -2,9 +2,9 @@ package uk.co.dnlegge;
 
 public interface ForgettingMap<K, V> {
 
-    int size();
+    int getSize();
 
-    int maxSize();
+    int getMaxSize();
 
     void add(K key, V value);
 

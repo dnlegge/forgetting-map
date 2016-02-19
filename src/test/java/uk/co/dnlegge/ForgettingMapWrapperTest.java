@@ -19,11 +19,11 @@ public class ForgettingMapWrapperTest {
 
         beingTested = new ForgettingMapWrapper<>(1);
 
-        assertEquals(1, beingTested.maxSize());
+        assertEquals(1, beingTested.getMaxSize());
 
         beingTested = new ForgettingMapWrapper<>(5);
 
-        assertEquals(5, beingTested.maxSize());
+        assertEquals(5, beingTested.getMaxSize());
 
     }
 
@@ -32,11 +32,11 @@ public class ForgettingMapWrapperTest {
 
         beingTested = new ForgettingMapWrapper<>(1);
 
-        assertEquals(0, beingTested.size());
+        assertEquals(0, beingTested.getSize());
 
         beingTested.add(0, "0");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
 
     }
 
@@ -44,11 +44,11 @@ public class ForgettingMapWrapperTest {
     public void testFind() throws Exception {
         beingTested = new ForgettingMapWrapper<>(1);
 
-        assertEquals(0, beingTested.size());
+        assertEquals(0, beingTested.getSize());
 
         beingTested.add(0, "0");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
         assertEquals("0", beingTested.find(0));
 
     }
@@ -58,16 +58,16 @@ public class ForgettingMapWrapperTest {
 
         beingTested = new ForgettingMapWrapper<>(1);
 
-        assertEquals(0, beingTested.size());
+        assertEquals(0, beingTested.getSize());
 
         beingTested.add(0, "0");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
         assertEquals("0", beingTested.find(0));
 
         beingTested.add(1, "1");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
         assertEquals("1", beingTested.find(1));
         //original element now forgotten
         assertEquals(null, beingTested.find(0));
@@ -79,16 +79,16 @@ public class ForgettingMapWrapperTest {
 
         beingTested = new ForgettingMapWrapper<>(2);
 
-        assertEquals(0, beingTested.size());
+        assertEquals(0, beingTested.getSize());
 
         beingTested.add(0, "0");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
         assertEquals("0", beingTested.find(0));
 
         beingTested.add(1, "1");
 
-        assertEquals(2, beingTested.size());
+        assertEquals(2, beingTested.getSize());
         assertEquals("1", beingTested.find(1));
         //original element now forgotten
         assertEquals("0", beingTested.find(0));
@@ -100,23 +100,23 @@ public class ForgettingMapWrapperTest {
 
         beingTested = new ForgettingMapWrapper<>(2);
 
-        assertEquals(0, beingTested.size());
+        assertEquals(0, beingTested.getSize());
 
         beingTested.add(0, "0");
 
-        assertEquals(1, beingTested.size());
+        assertEquals(1, beingTested.getSize());
         assertEquals("0", beingTested.find(0));
 
         beingTested.add(1, "1");
 
-        assertEquals(2, beingTested.size());
+        assertEquals(2, beingTested.getSize());
         assertEquals("1", beingTested.find(1));
         //original element now forgotten
         assertEquals("0", beingTested.find(0));
 
         beingTested.add(2, "2");
 
-        assertEquals(2, beingTested.size());
+        assertEquals(2, beingTested.getSize());
         assertEquals(null, beingTested.find(1));
         //original element now forgotten
         assertEquals("0", beingTested.find(0));
