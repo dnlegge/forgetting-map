@@ -1,9 +1,13 @@
 package uk.co.dnlegge;
 
-public interface ForgettingMap {
+public interface ForgettingMap<K, V> {
 
-    void add(Object key, Object value);
+    int size();
 
-    Object find(Object key);
+    int maxSize();
+
+    void add(K key, V value);
+
+    V find(K key);
 
 }
