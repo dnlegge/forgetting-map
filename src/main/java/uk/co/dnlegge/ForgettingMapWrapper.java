@@ -1,15 +1,13 @@
 package uk.co.dnlegge;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
 
     private final int maxSize;
     private final Map<K, V> map;
-    private final List<K> forgettingOrder;
+    private final ForgettingMapOrderList<K> orderList;
 
     public ForgettingMapWrapper() {
         this(10);
@@ -18,32 +16,31 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
     public ForgettingMapWrapper(int maxSize) {
         this.maxSize = maxSize;
         this.map = new ConcurrentHashMap<>();
-        this.forgettingOrder = new CopyOnWriteArrayList<>();
+        this.orderList = new ForgettingMapOrderList<>();
     }
 
+    @Override
     public void add(K key, V value) {
-
         //let map impl handle duplicate case
         putKeyValuePairIntoMap(key, value);
 
         removeOldestAccessedElementIfOversized();
 
-        addKeyAsLatestAccessedElement(key);
+        addToOrderList(key);
     }
 
     private void putKeyValuePairIntoMap(K key, V value) {
         map.put(key, value);
     }
 
-    private void addKeyAsLatestAccessedElement(K key) {
-        forgettingOrder.add(0, key);
+    private void addToOrderList(K key) {
+        orderList.add(key);
     }
 
     private void removeOldestAccessedElementIfOversized() {
         if (getSize() > getMaxSize()) {
-            final K entryToForget = getOldestAccessedElement();
+            final K entryToForget = removeOldestAccessedElement();
             removeFromMap(entryToForget);
-            removeOldestAccessedElement();
         }
     }
 
@@ -51,43 +48,18 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
         map.remove(entryToForget);
     }
 
-    private K getOldestAccessedElement() {
-        return forgettingOrder.get(getIndexOfLastElement());
+    private K removeOldestAccessedElement() {
+        return orderList.removeAndReturnLast();
     }
 
-    private void removeOldestAccessedElement() {
-        forgettingOrder.remove(getIndexOfLastElement());
-    }
-
-    private int getIndexOfLastElement() {
-        return forgettingOrder.size() - 1;
-    }
-
+    @Override
     public V find(K key) {
-        if (map.containsKey(key)) {
-            updateLatestAccessOrder(key);
+        final V returnValue = map.get(key);
+        if (returnValue != null) {
+            orderList.moveToFirst(key);
         }
 
-        return map.get(key);
-    }
-
-    private void updateLatestAccessOrder(K key) {
-        for (K thisKey : forgettingOrder) {
-            if (key.equals(thisKey)) {
-                moveToZeroPosition(key);
-                //operation complete - need to break here to avoid concurrency error
-                return;
-            }
-        }
-    }
-
-    private void moveToZeroPosition(K key) {
-        removeKeyFromCurrentOrderPosition(key);
-        addKeyAsLatestAccessedElement(key);
-    }
-
-    private void removeKeyFromCurrentOrderPosition(K key) {
-        forgettingOrder.remove(key);
+        return returnValue;
     }
 
     @Override
