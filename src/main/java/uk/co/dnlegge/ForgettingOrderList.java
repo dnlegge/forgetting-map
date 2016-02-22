@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ForgettingMapOrderList<K> {
+public class ForgettingOrderList<K> {
     private final List<K> order;
 
-    public ForgettingMapOrderList() {
-        //https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#synchronizedList-java.util.List-
+    public ForgettingOrderList() {
+        //see https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#synchronizedList-java.util.List-
         this.order = Collections.synchronizedList(new ArrayList<>());
     }
 
@@ -20,23 +20,15 @@ public class ForgettingMapOrderList<K> {
         return order.remove(getLastIndex());
     }
 
-    private int getLastIndex() {
-        return getSize() - 1;
-    }
-
-    public synchronized void moveToFront(K key) {
+    public void moveToFront(K key) {
         for (K thisKey : order) {
             if (key.equals(thisKey)) {
-                moveToZeroPosition(key);
-                //operation complete - need to break here to avoid concurrency error
+                remove(key);
+                add(key);
+                //operation complete - need to return here to avoid concurrency error
                 return;
             }
         }
-    }
-
-    private void moveToZeroPosition(K key) {
-        remove(key);
-        add(key);
     }
 
     private void remove(K key) {
@@ -46,4 +38,9 @@ public class ForgettingMapOrderList<K> {
     private int getSize() {
         return order.size();
     }
+
+    private int getLastIndex() {
+        return getSize() - 1;
+    }
+
 }
