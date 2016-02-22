@@ -1,13 +1,15 @@
 package uk.co.dnlegge;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ForgettingMapOrderList<K> {
     private final List<K> order;
 
     public ForgettingMapOrderList() {
-        this.order = new CopyOnWriteArrayList<>();
+        //https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#synchronizedList-java.util.List-
+        this.order = Collections.synchronizedList(new ArrayList<>());
     }
 
     public void add(K key) {
@@ -22,7 +24,7 @@ public class ForgettingMapOrderList<K> {
         return getSize() - 1;
     }
 
-    public void moveToFirst(K key) {
+    public synchronized void moveToFront(K key) {
         for (K thisKey : order) {
             if (key.equals(thisKey)) {
                 moveToZeroPosition(key);

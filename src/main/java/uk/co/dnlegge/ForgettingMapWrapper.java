@@ -56,7 +56,7 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
     public V find(K key) {
         final V returnValue = map.get(key);
         if (returnValue != null) {
-            orderList.moveToFirst(key);
+            orderList.moveToFront(key);
         }
 
         return returnValue;
