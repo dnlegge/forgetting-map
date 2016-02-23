@@ -1,10 +1,14 @@
 package uk.co.dnlegge;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -139,32 +143,77 @@ public class ForgettingMapTest {
     @Test
     public void tryToTestConcurrency() throws Exception {
 
-
-        beingTested = new ForgettingMapWrapper<>(10);
+        beingTested = new ForgettingMapWrapper<>(50);
 
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        for (int i = 0; i < 50; i++) {
+
+        List<Future<String>> futures = new ArrayList<>(60);
+        beingTested.add(0, "0");
+        for (int i = 1; i < 50; i++) {
             final int count = i;
-            final Runnable task = () -> {
+            Future<String> future = executor.submit(() -> {
                 try {
                     beingTested.add(count, "" + count);
                     assertEquals("0", beingTested.find(0));
                     assertEquals("" + count, beingTested.find(count));
                     System.out.println(count);
-                    assertEquals("1", beingTested.find(1));
+//                    assertEquals("1", beingTested.find(1));
 
+                    return "OK " + count;
                 } catch (Exception e) {
                     System.out.println("exception caught " + e + e.getMessage());
-                    fail();
+                    return "Exception: " + e.getClass().getName() + " " + e.getMessage();
                 }
 
-            };
-            executor.submit(task);
+            });
+            futures.add(future);
 
         }
         System.out.println("All submitted");
-        // As much as I hate using sleeps, let the test catch up
-        Thread.sleep(1000);
-        System.out.println("Times up!");
+
+        for (Future<String> future : futures) {
+//            assertTrue(future.isDone());
+            final String s = future.get(1, TimeUnit.SECONDS);
+            assertTrue(s, s.startsWith("OK "));
+        }
+
+    }
+
+    @Test
+    public void tryToTestConcurrencyFurther() throws Exception {
+
+        beingTested = new ForgettingMapWrapper<>(50);
+
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
+        List<Future<String>> futures = new ArrayList<>(60);
+//        beingTested.add(0, "0");
+        for (int i = 0; i < 60; i++) {
+            final int count = i / 10;
+            Future<String> future = executor.submit(() -> {
+                try {
+                    beingTested.add(count, "" + count);
+                    assertEquals("0", beingTested.find(0));
+                    assertEquals("" + count, beingTested.find(count));
+                    System.out.println(count);
+
+                    return "OK " + count;
+                } catch (Exception e) {
+                    System.out.println("exception caught " + e + e.getMessage());
+                    return "Exception: " + e.getClass().getName() + " " + e.getMessage();
+                }
+
+            });
+            futures.add(future);
+
+        }
+        System.out.println("All submitted");
+
+        for (Future<String> future : futures) {
+//            assertTrue(future.isDone());
+            final String s = future.get(1, TimeUnit.SECONDS);
+            assertTrue(s, s.startsWith("OK "));
+        }
+
     }
 }
