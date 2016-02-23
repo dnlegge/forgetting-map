@@ -29,7 +29,7 @@ public interface ForgettingOrder<K> {
     /**
      * Returns the instantaneous number of elements recorded in the order
      *
-     * @return
+     * @return size
      */
     int getSize();
 
