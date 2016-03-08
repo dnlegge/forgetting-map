@@ -31,14 +31,8 @@ public class ForgettingOrderList<K> implements ForgettingOrder<K> {
 
     @Override
     public void moveToFront(K key) {
-        for (K thisKey : order) {
-            if (key.equals(thisKey)) {
-                remove(key);
-                add(key);
-                //operation complete - need to return here to avoid concurrency error
-                return;
-            }
-        }
+        remove(key);
+        add(key);
     }
 
     @Override
