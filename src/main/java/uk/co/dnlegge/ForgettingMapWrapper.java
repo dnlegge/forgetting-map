@@ -9,15 +9,17 @@ import uk.co.dnlegge.order.ForgettingOrderList;
 /**
  * An implementation of a ForgettingMap
  * This implementation uses a Map to store key-value pairs,
- * and a List to record access-order
+ * and a ForgettingOrder implementation to record access-order
  */
 public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
-
 
     private final int maxSize;
     private final Map<K, V> map;
     private final ForgettingOrder<K> order;
 
+    /**
+     * Default constructor - constructs with a maxSize of 10
+     */
     public ForgettingMapWrapper() {
         this(10);
     }
@@ -56,10 +58,20 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
         }
     }
 
+    /**
+     * Put key value pair directly in to internal Map
+     *
+     * @param key
+     * @param value
+     */
     private void putKeyValuePairIntoMap(K key, V value) {
         map.put(key, value);
     }
 
+    /**
+     * Add key to ForgettingOrder
+     * @param key
+     */
     private void addToOrderList(K key) {
         order.add(key);
     }
@@ -74,17 +86,25 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
         }
     }
 
+    /**
+     * Remove key-value pair directly from internal map using key
+     * @param entryToForget
+     */
     private void removeFromMap(K entryToForget) {
         map.remove(entryToForget);
     }
 
+    /**
+     * Remove oldest-accessed item from ForgettingOrder, returning it
+     * @return removedItem
+     */
     private K removeAndReturnOldestAccessedElement() {
         return order.removeAndReturnLast();
     }
 
     @Override
     /**
-     * Synchonised so that cannot run if there is an add being called at the same time
+     * Synchonized so that cannot run if there is an add or getSize being called at the same time
      */
     public V find(K key) {
         synchronized (this) {
@@ -98,6 +118,10 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
     }
 
     @Override
+    /**
+     * Gets the size of the internal Map
+     * Also confirms synchronization with ForgettingOrder by confirming sizes match
+     */
     public int getSize() {
         synchronized (this) {
             if (order.getSize() != getMapSize()) {
@@ -107,11 +131,19 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
         }
     }
 
-    public int getMapSize() {
+    /**
+     * Private accessor using direct call to internal Map
+     *
+     * @return mapSize
+     */
+    private int getMapSize() {
         return map.size();
     }
 
     @Override
+    /**
+     * Gets maximum size of ForgettingMap set at construction (immutable)
+     */
     public int getMaxSize() {
         return maxSize;
     }

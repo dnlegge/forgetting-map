@@ -25,6 +25,7 @@ public class ForgettingOrderList<K> implements ForgettingOrder<K> {
     /**
      * Elements always get added at index zero to record them as most recently accessed
      * Make sure element being added is not duplicate
+     * Note: potential indirect recursive call - moveToFront calls this method in return
      */
     public void add(K key) {
         if (order.contains(key)) {

@@ -220,7 +220,10 @@ public class ForgettingMapTest {
                     assertEquals("0", beingTested.find(0));
                     assertEquals("" + count, beingTested.find(count));
                     System.out.println(count);
-//                    assertEquals("1", beingTested.find(1));
+
+                    final int size = beingTested.getSize();
+                    assertTrue(0 < size);
+                    assertTrue(50 >= size);
 
                     return "OK " + count;
                 } catch (Exception e) {
@@ -239,6 +242,10 @@ public class ForgettingMapTest {
             final String s = future.get(1, TimeUnit.SECONDS);
             assertTrue(s, s.startsWith("OK "));
         }
+
+        final int size = beingTested.getSize();
+        assertTrue(0 < size);
+        assertTrue(50 >= size);
 
     }
 
@@ -260,6 +267,10 @@ public class ForgettingMapTest {
                     assertEquals("" + count, beingTested.find(count));
                     System.out.println(count);
 
+                    final int size = beingTested.getSize();
+                    assertTrue(0 < size);
+                    assertTrue(6 >= size);
+
                     return "OK " + count;
                 } catch (Exception e) {
                     System.out.println("exception caught " + e + e.getMessage());
@@ -276,6 +287,8 @@ public class ForgettingMapTest {
             final String s = future.get(1, TimeUnit.SECONDS);
             assertTrue(s, s.startsWith("OK "));
         }
-
+        final int size = beingTested.getSize();
+        assertTrue(0 < size);
+        assertTrue(6 >= size);
     }
 }
