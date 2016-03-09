@@ -36,6 +36,9 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
     @Override
     /**
      * Synchonised so that cannot run if there is an find being called at the same time
+     * In this implementation, kv-pair is added to Map
+     * If this makes map oversized then remove oldest-accessed kv-pair
+     * Add new key to Ordering mechanism
      */
     public void add(K key, V value) {
         // I'm wary of synchronizing at such a high level because of the risk of deadlock,
@@ -65,7 +68,7 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
      * checks size does not exceed maximum and removes least-used record if it does
      */
     private void removeOldestAccessedElementIfOversized() {
-        if (getSize() > getMaxSize()) {
+        if (getMapSize() > getMaxSize()) {
             final K entryToForget = removeAndReturnOldestAccessedElement();
             removeFromMap(entryToForget);
         }
@@ -96,6 +99,15 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
 
     @Override
     public int getSize() {
+        synchronized (this) {
+            if (order.getSize() != getMapSize()) {
+                throw new RuntimeException("Size of Map and Order not in consistent state");
+            }
+            return getMapSize();
+        }
+    }
+
+    public int getMapSize() {
         return map.size();
     }
 

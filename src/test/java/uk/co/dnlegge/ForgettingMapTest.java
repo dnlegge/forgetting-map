@@ -49,6 +49,69 @@ public class ForgettingMapTest {
     }
 
     @Test
+    public void testGetSize10() throws Exception {
+
+        beingTested = new ForgettingMapWrapper<>(10);
+
+        assertEquals(0, beingTested.getSize());
+
+        beingTested.add(0, "0");
+        beingTested.add(1, "1");
+        beingTested.add(2, "2");
+        beingTested.add(3, "3");
+        beingTested.add(4, "4");
+
+        assertEquals(5, beingTested.getSize());
+
+        beingTested.add(5, "5");
+        beingTested.add(6, "6");
+        beingTested.add(7, "7");
+        beingTested.add(8, "8");
+        beingTested.add(9, "9");
+
+        assertEquals(10, beingTested.getSize());
+
+        beingTested.add(10, "10");
+
+        assertEquals(10, beingTested.getSize());
+
+    }
+
+
+    @Test
+    public void testAddDuplicates() throws Exception {
+
+        beingTested = new ForgettingMapWrapper<>(10);
+
+        assertEquals(0, beingTested.getSize());
+
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+
+        assertEquals(1, beingTested.getSize());
+
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+
+        assertEquals(1, beingTested.getSize());
+
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+        beingTested.add(0, "0");
+
+        assertEquals(1, beingTested.getSize());
+
+    }
+
+    @Test
     public void testFind() throws Exception {
         beingTested = new ForgettingMapWrapper<>(1);
 
@@ -187,7 +250,7 @@ public class ForgettingMapTest {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         List<Future<String>> futures = new ArrayList<>(60);
-//        beingTested.add(0, "0");
+
         for (int i = 0; i < 60; i++) {
             final int count = i / 10;
             Future<String> future = executor.submit(() -> {
@@ -210,7 +273,6 @@ public class ForgettingMapTest {
         System.out.println("All submitted");
 
         for (Future<String> future : futures) {
-//            assertTrue(future.isDone());
             final String s = future.get(1, TimeUnit.SECONDS);
             assertTrue(s, s.startsWith("OK "));
         }

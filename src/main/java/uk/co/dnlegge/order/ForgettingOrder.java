@@ -28,6 +28,7 @@ public interface ForgettingOrder<K> {
 
     /**
      * Returns the instantaneous number of elements recorded in the order
+     * (not sychronized)
      *
      * @return size
      */
