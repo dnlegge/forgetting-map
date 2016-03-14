@@ -148,4 +148,18 @@ public class ForgettingMapWrapper<K, V> implements ForgettingMap<K, V> {
         return maxSize;
     }
 
+    @Override
+    /**
+     *
+     */
+    public void validate() {
+        synchronized (this) {
+            for (K key : map.keySet()) {
+                if (!order.contains(key)) {
+                    throw new RuntimeException("Validation failed: ForgettingMap in inconsistent state");
+                }
+            }
+        }
+    }
+
 }

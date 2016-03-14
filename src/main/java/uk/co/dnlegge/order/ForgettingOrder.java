@@ -26,6 +26,10 @@ public interface ForgettingOrder<K> {
      */
     void moveToFront(K key);
 
+    boolean contains(K key);
+
+    int getIndexOf(K key);
+
     /**
      * Returns the instantaneous number of elements recorded in the order
      * (not sychronized)

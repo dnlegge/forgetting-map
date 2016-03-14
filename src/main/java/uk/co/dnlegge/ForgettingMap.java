@@ -32,4 +32,9 @@ public interface ForgettingMap<K, V> {
      */
     int getMaxSize();
 
+    /**
+     * Runs self check on contents
+     */
+    void validate();
+
 }

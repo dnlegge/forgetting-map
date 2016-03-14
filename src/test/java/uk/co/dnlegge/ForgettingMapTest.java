@@ -247,6 +247,8 @@ public class ForgettingMapTest {
         assertTrue(0 < size);
         assertTrue(50 >= size);
 
+        beingTested.validate();
+
     }
 
     @Test
@@ -287,8 +289,11 @@ public class ForgettingMapTest {
             final String s = future.get(1, TimeUnit.SECONDS);
             assertTrue(s, s.startsWith("OK "));
         }
+
         final int size = beingTested.getSize();
         assertTrue(0 < size);
         assertTrue(6 >= size);
+
+        beingTested.validate();
     }
 }

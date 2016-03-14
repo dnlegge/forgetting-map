@@ -60,6 +60,23 @@ public class ForgettingOrderList<K> implements ForgettingOrder<K> {
         return order.size();
     }
 
+    @Override
+    /**
+     * Check if a key is contained in the Order
+     */
+    public boolean contains(K key) {
+        return order.contains(key);
+    }
+
+    @Override
+    /**
+     * Return the index of the key if present
+     */
+    public int getIndexOf(K key) {
+        return order.indexOf(key);
+    }
+
+
     /**
      * Remove the given key from the list
      * Pleasingly can be done by direct access and not requiring iteration
